@@ -1,6 +1,6 @@
 from django.db import models
 
-from candyShop.shopping.validators import positive_value
+from .validators import positive_value, bolivian_phone_number
 
 
 class Category(models.Model):
@@ -25,7 +25,7 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     email = models.EmailField()
-    phone = models.CharField(max_length=100)
+    phone = models.CharField(max_length=100, validators=[bolivian_phone_number])
     address = models.TextField(blank=True)
 
     def __str__(self):
@@ -38,7 +38,7 @@ class Order(models.Model):
     paid = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.customer.first_name + " " + self.customer.last_name
+        return f"{self.id}. {self.customer.first_name} {self.customer.last_name}"
 
 
 class OrderItem(models.Model):
@@ -48,7 +48,7 @@ class OrderItem(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10, validators=[positive_value])
 
     def __str__(self):
-        return self.order.customer.first_name + " " + self.order.customer.last_name
+        return f"{self.id}. {self.order.customer.first_name} {self.order.customer.last_name}"
 
     def get_total(self):
         return self.price * self.quantity
